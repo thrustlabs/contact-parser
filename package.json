@@ -1,0 +1,23 @@
+{
+    "name": "contact-parser",
+    "version": "0.0.1",
+    "description": "Parse a block of text (such as an email signature) and extract address fields",
+    "main": "dist/contact-parser.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/thrustlabs/contact-parser.git"
+    },
+    "author": "Jason Doucette",
+    "license": "MIT",
+    "devDependencies": {
+        "jasmine-node": "~1.14.3",
+        "coffee-script": "~1.7.0",
+        "grunt": "~0.4.2",
+        "grunt-contrib-coffee": "~0.10.1",
+        "grunt-contrib-watch": "~0.6.1",
+        "grunt-contrib-clean": "~0.4.1",
+        "grunt-contrib-copy": "~0.5.0",
+        "grunt-jasmine-node": "latest",
+        "grunt-cli": "~0.1.13"
+    }
+}

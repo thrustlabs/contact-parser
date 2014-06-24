@@ -30,9 +30,25 @@ var ContactParser,
   __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 ContactParser = (function() {
-  var americanStates, canadianProvinces;
+  var ContactParserResult, americanStates, canadianProvinces;
 
   function ContactParser() {}
+
+  ContactParserResult = (function() {
+    function ContactParserResult() {
+      this.name = '';
+      this.email = '';
+      this.province = '';
+      this.country = '';
+      this.address = '';
+      this.postal = '';
+      this.website = '';
+      this.phone = '';
+    }
+
+    return ContactParserResult;
+
+  })();
 
   canadianProvinces = {
     'british columbia': 'BC',
@@ -191,15 +207,8 @@ ContactParser = (function() {
   };
 
   ContactParser.prototype.parse = function(address) {
-    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, matches, phoneRegex, streetNameRegex, trim, usZipRegex, usedFields, websiteRegex, _i, _len, _ref, _results;
-    this.name = '';
-    this.email = '';
-    this.province = '';
-    this.country = '';
-    this.address = '';
-    this.postal = '';
-    this.website = '';
-    this.phone = '';
+    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, matches, phoneRegex, result, streetNameRegex, trim, usZipRegex, usedFields, websiteRegex, _i, _len, _ref;
+    result = new ContactParserResult;
     indexes = {};
     usedFields = [];
     trim = function(txt) {
@@ -213,78 +222,75 @@ ContactParser = (function() {
     phoneRegex = /(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/;
     if (canadianPostalRegex.test(address)) {
       matches = address.match(canadianPostalRegex);
-      this.postal = matches[0];
+      result.postal = matches[0];
       address = address.replace(matches[0], ',');
     }
     if (usZipRegex.test(address)) {
       matches = address.match(usZipRegex);
-      this.postal = matches[0];
+      result.postal = matches[0];
       address = address.replace(matches[0], ',');
     }
     fields = address.split(/\s*[,\n\|]\s*/);
-    this.name = trim(fields[0]);
+    result.name = trim(fields[0]);
     fields.shift;
     addressRegex = /^\d+\s+\D+/;
     for (i = _i = 0, _len = fields.length; _i < _len; i = ++_i) {
       field = fields[i];
       field = trim(field);
       if (emailRegex.test(field)) {
-        this.email = field;
+        result.email = field;
         indexes['email'] = i;
         usedFields.push(i);
       } else if (phoneRegex.test(field)) {
         matches = phoneRegex.exec(field);
-        this.phone = "(" + matches[1] + ") " + matches[2] + "-" + matches[3];
+        result.phone = "(" + matches[1] + ") " + matches[2] + "-" + matches[3];
         indexes['phone'] = i;
         usedFields.push(i);
       } else if (addressRegex.test(field)) {
-        this.address = field;
+        result.address = field;
         indexes['address'] = i;
         usedFields.push(i);
-        matches = this.address.match(streetNameRegex);
+        matches = result.address.match(streetNameRegex);
         if (matches) {
-          if (this.address.indexOf(matches[0]) < this.address.length - matches[0].length - 1) {
-            extraInfo = this.address.substring(this.address.indexOf(matches[0]) + matches[0].length);
-            this.city = trim(extraInfo);
-            this.address = this.address.substring(0, this.address.indexOf(matches[0]) + matches[0].length - 1);
+          if (result.address.indexOf(matches[0]) < result.address.length - matches[0].length - 1) {
+            extraInfo = result.address.substring(result.address.indexOf(matches[0]) + matches[0].length);
+            result.city = trim(extraInfo);
+            result.address = result.address.substring(0, result.address.indexOf(matches[0]) + matches[0].length - 1);
           }
         }
       } else if (websiteRegex.test(field)) {
-        this.website = field;
-        if (this.website.indexOf('http') !== 0) {
-          this.website = "http://" + this.website;
+        result.website = field;
+        if (result.website.indexOf('http') !== 0) {
+          result.website = "http://" + result.website;
         }
         indexes['website'] = i;
         usedFields.push(i);
       } else if (field.toLowerCase() in canadianProvinces) {
-        this.province = canadianProvinces[field.toLowerCase()];
-        this.country = 'Canada';
+        result.province = canadianProvinces[field.toLowerCase()];
+        result.country = 'Canada';
         indexes['province'] = i;
         usedFields.push(i);
       } else if (field.toLowerCase() in americanStates) {
-        this.province = americanStates[field.toLowerCase()];
-        this.country = 'USA';
+        result.province = americanStates[field.toLowerCase()];
+        result.country = 'USA';
         indexes['province'] = i;
         usedFields.push(i);
       }
     }
-    if (!this.city && indexes['province']) {
-      this.city = trim(fields[indexes['province'] - 1]);
+    if (!result.city && indexes['province']) {
+      result.city = trim(fields[indexes['province'] - 1]);
       usedFields.push(indexes['province'] - 1);
     }
     if (indexes['address']) {
       i = indexes['address'];
-      _results = [];
       while (i + 1 <= fields.length && (_ref = i + 1, __indexOf.call(usedFields, _ref) < 0)) {
         i++;
         if (trim(fields[i]) !== '') {
-          _results.push(this.address = "" + this.address + ", " + (trim(fields[i])));
-        } else {
-          _results.push(void 0);
+          result.address = "" + result.address + ", " + (trim(fields[i]));
         }
       }
-      return _results;
     }
+    return result;
   };
 
   return ContactParser;

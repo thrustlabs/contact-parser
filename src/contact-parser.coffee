@@ -29,6 +29,17 @@ THE SOFTWARE.
 
 class ContactParser
 
+  class ContactParserResult
+    constructor: () ->
+      @name = ''
+      @email = ''
+      @province = ''
+      @country = ''
+      @address = ''
+      @postal = ''
+      @website = ''
+      @phone = ''
+
   canadianProvinces = {
     'british columbia': 'BC', 'bc': 'BC',
     'alberta': 'AB', 'ab': 'AB',
@@ -108,14 +119,7 @@ class ContactParser
   }
 
   parse: (address) ->
-    @name = ''
-    @email = ''
-    @province = ''
-    @country = ''
-    @address = ''
-    @postal = ''
-    @website = ''
-    @phone = ''
+    result = new ContactParserResult
 
     indexes = {}
     usedFields = []
@@ -132,65 +136,67 @@ class ContactParser
 
     if canadianPostalRegex.test(address)
       matches = address.match(canadianPostalRegex)
-      @postal = matches[0]
+      result.postal = matches[0]
       address = address.replace(matches[0], ',')
     if usZipRegex.test(address)
       matches = address.match(usZipRegex)
-      @postal = matches[0]
+      result.postal = matches[0]
       address = address.replace(matches[0], ',')
 
     fields = address.split(/\s*[,\n\|]\s*/)
-    @name = trim(fields[0])
+    result.name = trim(fields[0])
     fields.shift
 
     addressRegex = /^\d+\s+\D+/
     for field, i in fields
       field = trim(field)
       if emailRegex.test(field)
-        @email = field
+        result.email = field
         indexes['email'] = i
         usedFields.push(i)
       else if phoneRegex.test(field)
         matches = phoneRegex.exec(field)
-        @phone = "(#{matches[1]}) #{matches[2]}-#{matches[3]}"
+        result.phone = "(#{matches[1]}) #{matches[2]}-#{matches[3]}"
         indexes['phone'] = i
         usedFields.push(i)
       else if addressRegex.test(field)
-        @address = field
+        result.address = field
         indexes['address'] = i
         usedFields.push(i)
-        matches = @address.match(streetNameRegex)
+        matches = result.address.match(streetNameRegex)
         if matches
-          if @address.indexOf(matches[0]) < @address.length - matches[0].length - 1
-            extraInfo = @address.substring(@address.indexOf(matches[0]) + matches[0].length)
-            @city = trim(extraInfo)
-            @address = @address.substring(0, @address.indexOf(matches[0]) + matches[0].length - 1)
+          if result.address.indexOf(matches[0]) < result.address.length - matches[0].length - 1
+            extraInfo = result.address.substring(result.address.indexOf(matches[0]) + matches[0].length)
+            result.city = trim(extraInfo)
+            result.address = result.address.substring(0, result.address.indexOf(matches[0]) + matches[0].length - 1)
       else if websiteRegex.test(field)
-        @website = field
-        @website = "http://#{@website}" if @website.indexOf('http') != 0
+        result.website = field
+        result.website = "http://#{result.website}" if result.website.indexOf('http') != 0
         indexes['website'] = i
         usedFields.push(i)
       else if field.toLowerCase() of canadianProvinces
-        @province = canadianProvinces[field.toLowerCase()]
-        @country = 'Canada'
+        result.province = canadianProvinces[field.toLowerCase()]
+        result.country = 'Canada'
         indexes['province'] = i
         usedFields.push(i)
       else if field.toLowerCase() of americanStates
-        @province = americanStates[field.toLowerCase()]
-        @country = 'USA'
+        result.province = americanStates[field.toLowerCase()]
+        result.country = 'USA'
         indexes['province'] = i
         usedFields.push(i)
-    if !@city && indexes['province']
-      @city = trim(fields[indexes['province']-1])
+    if !result.city && indexes['province']
+      result.city = trim(fields[indexes['province']-1])
       usedFields.push(indexes['province']-1)
 
     if indexes['address']
       i = indexes['address']
-      #@address = "#{i} #{fields[i+1]} #{usedFields[i+1]} #{fields.length}"
+      #result.address = "#{i} #{fields[i+1]} #{usedFields[i+1]} #{fields.length}"
       while i+1 <= fields.length && (i+1) not in usedFields
         i++
         if trim(fields[i]) != ''
-          @address = "#{@address}, #{trim(fields[i])}"
+          result.address = "#{result.address}, #{trim(fields[i])}"
+
+    return result
 
 module.exports = () ->
   return new ContactParser

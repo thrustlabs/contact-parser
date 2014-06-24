@@ -125,7 +125,7 @@ class ContactParser
     usedFields = []
 
     trim = (txt) ->
-      return txt.replace(/^\s+|\s+$/g, '')
+      return (txt || '').replace(/^\s+|\s+$/g, '')
 
     canadianPostalRegex = /[a-z]\d[a-z]\s*\d[a-z]\d/i
     usZipRegex = /\d\d\d\d\d/

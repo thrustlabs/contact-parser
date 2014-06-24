@@ -110,3 +110,9 @@ describe 'Contact Parser', ->
     expect(result.website).toEqual('')
     expect(result.phone).toEqual('(860) 664-0299')
 
+  it 'should parse shorter blocks', ->
+    address = "Hello, 123 jones st"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.name).toEqual('Hello')
+    expect(result.address).toEqual('123 jones st')

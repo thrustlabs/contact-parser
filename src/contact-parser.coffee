@@ -192,4 +192,5 @@ class ContactParser
         if trim(fields[i]) != ''
           @address = "#{@address}, #{trim(fields[i])}"
 
-module.exports = ContactParser
+module.exports = () ->
+  return new ContactParser

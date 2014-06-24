@@ -290,3 +290,7 @@ ContactParser = (function() {
   return ContactParser;
 
 })();
+
+module.exports = function() {
+  return new ContactParser;
+};

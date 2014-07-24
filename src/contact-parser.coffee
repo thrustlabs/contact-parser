@@ -133,6 +133,7 @@ class ContactParser
     websiteRegex = /(http|www)\S+/
     streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)(\s|$)/i
     phoneRegex = /(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/
+    addressRegex = /^\d+\s+.*/
 
     if canadianPostalRegex.test(address)
       matches = address.match(canadianPostalRegex)
@@ -144,10 +145,13 @@ class ContactParser
       address = address.replace(matches[0], ',')
 
     fields = address.split(/\s*[,\n\|]\s*/)
-    result.name = trim(fields[0])
-    fields.shift
+    if addressRegex.test(fields[0])
+      result.address = trim(fields[0])
+      fields.shift
+    else
+      result.name = trim(fields[0])
+      fields.shift
 
-    addressRegex = /^\d+\s+\D+/
     for field, i in fields
       field = trim(field)
       if emailRegex.test(field)
@@ -159,7 +163,7 @@ class ContactParser
         result.phone = "(#{matches[1]}) #{matches[2]}-#{matches[3]}"
         indexes['phone'] = i
         usedFields.push(i)
-      else if addressRegex.test(field)
+      else if result.address == '' && addressRegex.test(field)
         result.address = field
         indexes['address'] = i
         usedFields.push(i)
@@ -174,16 +178,23 @@ class ContactParser
         result.website = "http://#{result.website}" if result.website.indexOf('http') != 0
         indexes['website'] = i
         usedFields.push(i)
-      else if field.toLowerCase() of canadianProvinces
-        result.province = canadianProvinces[field.toLowerCase()]
-        result.country = 'Canada'
-        indexes['province'] = i
-        usedFields.push(i)
-      else if field.toLowerCase() of americanStates
-        result.province = americanStates[field.toLowerCase()]
-        result.country = 'USA'
-        indexes['province'] = i
-        usedFields.push(i)
+      else
+        subfields = fields[i].split(/\s+/)
+        for subfield, ix in subfields
+          if subfield.toLowerCase() of canadianProvinces
+            result.province = canadianProvinces[subfield.toLowerCase()]
+            result.country = 'Canada'
+            fields[i] = fields[i].replace(subfield, '')
+            indexes['province'] = i + (trim(fields[i]).length > 0 ? 1 : 0)
+            usedFields.push(i)
+            break;
+          else if subfield.toLowerCase() of americanStates
+            result.province = americanStates[subfield.toLowerCase()]
+            result.country = 'USA'
+            fields[i] = fields[i].replace(subfield, '')
+            indexes['province'] = i + (trim(fields[i]).length > 0 ? 1 : 0)
+            usedFields.push(i)
+            break;
     if !result.city && indexes['province']
       result.city = trim(fields[indexes['province']-1])
       usedFields.push(indexes['province']-1)

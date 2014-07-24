@@ -122,3 +122,12 @@ describe 'Contact Parser', ->
     sut = new ContactParser
     result = sut.parse(address)
     expect(result.postal).toEqual('12345-1234')
+
+  it 'should work when a name is missing', ->
+    address = "1 17th Street #5, Denver CO 12345-1234"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.address).toEqual('1 17th Street #5')
+    expect(result.city).toEqual('Denver')
+    expect(result.province).toEqual('CO')
+    expect(result.postal).toEqual('12345-1234')

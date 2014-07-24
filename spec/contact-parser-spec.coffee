@@ -116,3 +116,9 @@ describe 'Contact Parser', ->
     result = sut.parse(address)
     expect(result.name).toEqual('Hello')
     expect(result.address).toEqual('123 jones st')
+
+  it 'should recognize 5-4 ZIP codes', ->
+    address = "Mark, 1 17th Street #5, Denver CO 12345-1234"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.postal).toEqual('12345-1234')

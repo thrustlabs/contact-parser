@@ -215,7 +215,7 @@ ContactParser = (function() {
       return (txt || '').replace(/^\s+|\s+$/g, '');
     };
     canadianPostalRegex = /[a-z]\d[a-z]\s*\d[a-z]\d/i;
-    usZipRegex = /\d\d\d\d\d/;
+    usZipRegex = /\d\d\d\d\d(-\d\d\d\d){0,1}/;
     emailRegex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
     websiteRegex = /(http|www)\S+/;
     streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)(\s|$)/i;

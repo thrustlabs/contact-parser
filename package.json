@@ -13,7 +13,7 @@
   "author": "Jason Doucette",
   "license": "MIT",
   "devDependencies": {
-    "jasmine-node": "~1.14.3",
+    "jasmine-node": "~1.14.5",
     "coffee-script": "~1.7.0",
     "grunt": "~0.4.2",
     "grunt-contrib-coffee": "~0.10.1",

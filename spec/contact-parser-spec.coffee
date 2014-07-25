@@ -1,6 +1,6 @@
 describe 'Contact Parser', ->
 
-  ContactParser = require(__dirname + '/../src/contact-parser.js')
+  ContactParser = require(__dirname + '/../src/contact-parser.coffee')
 
   it 'should extract the name', ->
     expectedValue = 'John Smith'

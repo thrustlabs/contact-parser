@@ -131,3 +131,14 @@ describe 'Contact Parser', ->
     expect(result.city).toEqual('Denver')
     expect(result.province).toEqual('CO')
     expect(result.postal).toEqual('12345-1234')
+
+  it 'should work with 5 digit street addresses', ->
+    address = "12345 Andrews Dr, Denver, CO 80239-4458"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.address).toEqual('12345 Andrews Dr')
+    expect(result.city).toEqual('Denver')
+    expect(result.province).toEqual('CO')
+    expect(result.postal).toEqual('80239-4458')
+
+

@@ -207,7 +207,7 @@ ContactParser = (function() {
   };
 
   ContactParser.prototype.parse = function(address) {
-    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, matches, phoneRegex, result, streetNameRegex, trim, usZipRegex, usedFields, websiteRegex, _i, _len, _ref;
+    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, ix, matches, phoneRegex, result, streetNameRegex, subfield, subfields, trim, usZipRegex, usedFields, websiteRegex, _i, _j, _len, _len1, _ref, _ref1, _ref2;
     result = new ContactParserResult;
     indexes = {};
     usedFields = [];
@@ -220,6 +220,7 @@ ContactParser = (function() {
     websiteRegex = /(http|www)\S+/;
     streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)(\s|$)/i;
     phoneRegex = /(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/;
+    addressRegex = /^\d+\s+.*/;
     if (canadianPostalRegex.test(address)) {
       matches = address.match(canadianPostalRegex);
       result.postal = matches[0];
@@ -231,9 +232,13 @@ ContactParser = (function() {
       address = address.replace(matches[1], ',');
     }
     fields = address.split(/\s*[,\n\|]\s*/);
-    result.name = trim(fields[0]);
-    fields.shift;
-    addressRegex = /^\d+\s+\D+/;
+    if (addressRegex.test(fields[0])) {
+      result.address = trim(fields[0]);
+      fields.shift;
+    } else {
+      result.name = trim(fields[0]);
+      fields.shift;
+    }
     for (i = _i = 0, _len = fields.length; _i < _len; i = ++_i) {
       field = fields[i];
       field = trim(field);
@@ -246,7 +251,7 @@ ContactParser = (function() {
         result.phone = "(" + matches[1] + ") " + matches[2] + "-" + matches[3];
         indexes['phone'] = i;
         usedFields.push(i);
-      } else if (addressRegex.test(field)) {
+      } else if (result.address === '' && addressRegex.test(field)) {
         result.address = field;
         indexes['address'] = i;
         usedFields.push(i);
@@ -265,16 +270,30 @@ ContactParser = (function() {
         }
         indexes['website'] = i;
         usedFields.push(i);
-      } else if (field.toLowerCase() in canadianProvinces) {
-        result.province = canadianProvinces[field.toLowerCase()];
-        result.country = 'Canada';
-        indexes['province'] = i;
-        usedFields.push(i);
-      } else if (field.toLowerCase() in americanStates) {
-        result.province = americanStates[field.toLowerCase()];
-        result.country = 'USA';
-        indexes['province'] = i;
-        usedFields.push(i);
+      } else {
+        subfields = fields[i].split(/\s+/);
+        for (ix = _j = 0, _len1 = subfields.length; _j < _len1; ix = ++_j) {
+          subfield = subfields[ix];
+          if (subfield.toLowerCase() in canadianProvinces) {
+            result.province = canadianProvinces[subfield.toLowerCase()];
+            result.country = 'Canada';
+            fields[i] = fields[i].replace(subfield, '');
+            indexes['province'] = i + ((_ref = trim(fields[i]).length > 0) != null ? _ref : {
+              1: 0
+            });
+            usedFields.push(i);
+            break;
+          } else if (subfield.toLowerCase() in americanStates) {
+            result.province = americanStates[subfield.toLowerCase()];
+            result.country = 'USA';
+            fields[i] = fields[i].replace(subfield, '');
+            indexes['province'] = i + ((_ref1 = trim(fields[i]).length > 0) != null ? _ref1 : {
+              1: 0
+            });
+            usedFields.push(i);
+            break;
+          }
+        }
       }
     }
     if (!result.city && indexes['province']) {
@@ -283,7 +302,7 @@ ContactParser = (function() {
     }
     if (indexes['address']) {
       i = indexes['address'];
-      while (i + 1 <= fields.length && (_ref = i + 1, __indexOf.call(usedFields, _ref) < 0)) {
+      while (i + 1 <= fields.length && (_ref2 = i + 1, __indexOf.call(usedFields, _ref2) < 0)) {
         i++;
         if (trim(fields[i]) !== '') {
           result.address = "" + result.address + ", " + (trim(fields[i]));

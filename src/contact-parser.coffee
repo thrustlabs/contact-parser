@@ -41,33 +41,33 @@ class ContactParser
       @phone = ''
 
   canadianProvinces = {
-    'british columbia': 'BC', 'bc': 'BC',
+    'british_columbia': 'BC', 'bc': 'BC',
     'alberta': 'AB', 'ab': 'AB',
     'saskatchewan': 'sk', 'sk': 'SK',
     'manitoba': 'MB', 'mb': 'MB',
     'ontario': 'ON', 'on': 'ON'
     'quebec': 'QC', 'qc': 'QC',
-    'newfoundland': 'NL', 'newfoundland and labrador': 'NL', 'newfoundland and labrador': 'NL', 'labrador': 'NL', 'nl': 'NL',
-    'new brunswick': 'NB', 'nb': 'NB',
-    'prince edward island': 'PE', 'PEI': 'PE', 'pe': 'PE',
-    'nova scotia': 'NS', 'ns': 'NS',
-    'yukon territories': 'YT', 'yukon': 'YT', 'yt': 'YT',
-    'northwest territories': 'NT', 'nt': 'NT',
+    'newfoundland': 'NL', 'newfoundland_and_labrador': 'NL', 'labrador': 'NL', 'nl': 'NL',
+    'new_brunswick': 'NB', 'nb': 'NB',
+    'prince_edward_island': 'PE', 'PEI': 'PE', 'pe': 'PE',
+    'nova_scotia': 'NS', 'ns': 'NS',
+    'yukon_territories': 'YT', 'yukon': 'YT', 'yt': 'YT',
+    'northwest_territories': 'NT', 'nt': 'NT',
     'nunavut': 'NU', 'nu': 'NU'
   }
 
   americanStates = {
     'alabama': 'AL', 'al': 'AL',
     'alaska': 'AK', 'ak': 'AK',
-    'american samoa': 'AS', 'as': 'AS',
+    'american_samoa': 'AS', 'as': 'AS',
     'arizona': 'AZ', 'az': 'AZ',
     'arkansas': 'AR', 'ar': 'AR',
     'california': 'CA', 'ca': 'CA',
     'colorado': 'CO', 'co': 'CO',
     'connecticut': 'CT', 'ct': 'CT',
     'delaware': 'DE', 'de': 'DE',
-    'district of columbia': 'DC', 'd.c.': 'DC', 'dc': 'DC',
-    'federated states of micronesia': 'FM', 'fm': 'FM',
+    'district_of_columbia': 'DC', 'd.c.': 'DC', 'dc': 'DC',
+    'federated_states_of_micronesia': 'FM', 'fm': 'FM',
     'florida': 'FL', 'fl': 'FL',
     'georgia': 'GA', 'ga': 'GA',
     'guam': 'GU', 'gu': 'GU',
@@ -80,7 +80,7 @@ class ContactParser
     'kentucky': 'KY', 'ky': 'KY',
     'louisiana': 'LA', 'la': 'LA',
     'maine': 'ME', 'me': 'ME',
-    'marshall islands': 'MH', 'mh': 'MH',
+    'marshall_islands': 'MH', 'mh': 'MH',
     'maryland': 'MD', 'md': 'MD',
     'massachusetts': 'MA', 'ma': 'MA',
     'michigan': 'MI', 'mi': 'MI',
@@ -90,30 +90,30 @@ class ContactParser
     'montana': 'MT', 'mt': 'MT',
     'nebraska': 'NE', 'ne': 'NE',
     'nevada': 'NV', 'nv': 'NV',
-    'new hampshire': 'NH', 'nh': 'NH',
-    'new jersey': 'NJ', 'nj': 'NJ',
-    'new mexico': 'NM', 'nm': 'NM',
-    'new york': 'NY', 'ny': 'NY',
-    'north carolina': 'NC', 'nc': 'NC',
-    'north dakota': 'ND', 'nd': 'ND',
-    'northern mariana islands': 'MP', 'mp': 'MP',
+    'new_hampshire': 'NH', 'nh': 'NH',
+    'new_jersey': 'NJ', 'nj': 'NJ',
+    'new_mexico': 'NM', 'nm': 'NM',
+    'new_york': 'NY', 'ny': 'NY',
+    'north_carolina': 'NC', 'nc': 'NC',
+    'north_dakota': 'ND', 'nd': 'ND',
+    'northern_mariana_islands': 'MP', 'mp': 'MP',
     'ohio': 'OH', 'oh': 'OH',
     'oklahoma': 'OK', 'ok': 'OK',
     'oregon': 'OR', 'or': 'OR',
     'palau': 'PW', 'pw': 'PW',
     'pennsylvania': 'PA', 'pa': 'PA',
-    'puerto rico': 'PR', 'pr': 'PR',
-    'rhode island': 'RI', 'ri': 'RI',
-    'south carolina': 'SC', 'sc': 'SC',
-    'south dakota': 'SD', 'sd': 'SD',
+    'puerto_rico': 'PR', 'pr': 'PR',
+    'rhode_island': 'RI', 'ri': 'RI',
+    'south_carolina': 'SC', 'sc': 'SC',
+    'south_dakota': 'SD', 'sd': 'SD',
     'tennessee': 'TN', 'tn': 'TN',
     'texas': 'TX', 'tx': 'TX',
     'utah': 'UT', 'ut': 'UT',
     'vermont': 'VT', 'vt': 'VT',
-    'virgin islands': 'VI', 'vi': 'VI',
+    'virgin_islands': 'VI', 'vi': 'VI',
     'virginia': 'VA', 'va': 'VA',
     'washington': 'WA', 'wa': 'WA',
-    'west virginia': 'WV', 'wv': 'WV',
+    'west_virginia': 'WV', 'wv': 'WV',
     'wisconsin': 'WI', 'wi': 'WI',
     'wyoming': 'WY', 'wy': 'WY'
   }
@@ -180,7 +180,17 @@ class ContactParser
         indexes['website'] = i
         usedFields.push(i)
       else
-        subfields = fields[i].split(/\s+/)
+        subfields = fields[i]
+        for key, value of require('util')._extend({}, americanStates, canadianProvinces)
+          if key.indexOf('_') > 0
+            search = "(#{key.replace('_', ') (')})"
+            replacement = key.replace(/[^_]+/g, "$$$$")
+            ri = 1
+            while(replacement.indexOf("$$") >= 0)
+              replacement = replacement.replace("$$", "$#{ri++}")
+            subfields = subfields.replace(new RegExp(search, 'i'), replacement)
+        subfields = subfields.split(/\s+/)
+
         for subfield, ix in subfields
           if subfield.toLowerCase() of canadianProvinces
             result.province = canadianProvinces[subfield.toLowerCase()]
@@ -192,7 +202,7 @@ class ContactParser
           else if subfield.toLowerCase() of americanStates
             result.province = americanStates[subfield.toLowerCase()]
             result.country = 'USA'
-            fields[i] = fields[i].replace(subfield, '')
+            fields[i] = fields[i].replace(subfield.replace('_', ' '), '')
             indexes['province'] = i + (trim(fields[i]).length > 0 ? 1 : 0)
             usedFields.push(i)
             break;

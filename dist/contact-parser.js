@@ -51,7 +51,7 @@ ContactParser = (function() {
   })();
 
   canadianProvinces = {
-    'british columbia': 'BC',
+    'british_columbia': 'BC',
     'bc': 'BC',
     'alberta': 'AB',
     'ab': 'AB',
@@ -64,21 +64,20 @@ ContactParser = (function() {
     'quebec': 'QC',
     'qc': 'QC',
     'newfoundland': 'NL',
-    'newfoundland and labrador': 'NL',
-    'newfoundland and labrador': 'NL',
+    'newfoundland_and_labrador': 'NL',
     'labrador': 'NL',
     'nl': 'NL',
-    'new brunswick': 'NB',
+    'new_brunswick': 'NB',
     'nb': 'NB',
-    'prince edward island': 'PE',
+    'prince_edward_island': 'PE',
     'PEI': 'PE',
     'pe': 'PE',
-    'nova scotia': 'NS',
+    'nova_scotia': 'NS',
     'ns': 'NS',
-    'yukon territories': 'YT',
+    'yukon_territories': 'YT',
     'yukon': 'YT',
     'yt': 'YT',
-    'northwest territories': 'NT',
+    'northwest_territories': 'NT',
     'nt': 'NT',
     'nunavut': 'NU',
     'nu': 'NU'
@@ -89,7 +88,7 @@ ContactParser = (function() {
     'al': 'AL',
     'alaska': 'AK',
     'ak': 'AK',
-    'american samoa': 'AS',
+    'american_samoa': 'AS',
     'as': 'AS',
     'arizona': 'AZ',
     'az': 'AZ',
@@ -103,10 +102,10 @@ ContactParser = (function() {
     'ct': 'CT',
     'delaware': 'DE',
     'de': 'DE',
-    'district of columbia': 'DC',
+    'district_of_columbia': 'DC',
     'd.c.': 'DC',
     'dc': 'DC',
-    'federated states of micronesia': 'FM',
+    'federated_states_of_micronesia': 'FM',
     'fm': 'FM',
     'florida': 'FL',
     'fl': 'FL',
@@ -132,7 +131,7 @@ ContactParser = (function() {
     'la': 'LA',
     'maine': 'ME',
     'me': 'ME',
-    'marshall islands': 'MH',
+    'marshall_islands': 'MH',
     'mh': 'MH',
     'maryland': 'MD',
     'md': 'MD',
@@ -152,19 +151,19 @@ ContactParser = (function() {
     'ne': 'NE',
     'nevada': 'NV',
     'nv': 'NV',
-    'new hampshire': 'NH',
+    'new_hampshire': 'NH',
     'nh': 'NH',
-    'new jersey': 'NJ',
+    'new_jersey': 'NJ',
     'nj': 'NJ',
-    'new mexico': 'NM',
+    'new_mexico': 'NM',
     'nm': 'NM',
-    'new york': 'NY',
+    'new_york': 'NY',
     'ny': 'NY',
-    'north carolina': 'NC',
+    'north_carolina': 'NC',
     'nc': 'NC',
-    'north dakota': 'ND',
+    'north_dakota': 'ND',
     'nd': 'ND',
-    'northern mariana islands': 'MP',
+    'northern_mariana_islands': 'MP',
     'mp': 'MP',
     'ohio': 'OH',
     'oh': 'OH',
@@ -176,13 +175,13 @@ ContactParser = (function() {
     'pw': 'PW',
     'pennsylvania': 'PA',
     'pa': 'PA',
-    'puerto rico': 'PR',
+    'puerto_rico': 'PR',
     'pr': 'PR',
-    'rhode island': 'RI',
+    'rhode_island': 'RI',
     'ri': 'RI',
-    'south carolina': 'SC',
+    'south_carolina': 'SC',
     'sc': 'SC',
-    'south dakota': 'SD',
+    'south_dakota': 'SD',
     'sd': 'SD',
     'tennessee': 'TN',
     'tn': 'TN',
@@ -192,13 +191,13 @@ ContactParser = (function() {
     'ut': 'UT',
     'vermont': 'VT',
     'vt': 'VT',
-    'virgin islands': 'VI',
+    'virgin_islands': 'VI',
     'vi': 'VI',
     'virginia': 'VA',
     'va': 'VA',
     'washington': 'WA',
     'wa': 'WA',
-    'west virginia': 'WV',
+    'west_virginia': 'WV',
     'wv': 'WV',
     'wisconsin': 'WI',
     'wi': 'WI',
@@ -207,7 +206,7 @@ ContactParser = (function() {
   };
 
   ContactParser.prototype.parse = function(address) {
-    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, ix, matches, parts, phoneRegex, possibleCity, result, secondCheck, streetNameRegex, subfield, subfields, trim, usZipRegex, usedFields, websiteRegex, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
+    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, ix, key, matches, parts, phoneRegex, possibleCity, replacement, result, ri, search, secondCheck, streetNameRegex, subfield, subfields, trim, usZipRegex, usedFields, value, websiteRegex, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4;
     result = new ContactParserResult;
     indexes = {};
     usedFields = [];
@@ -271,14 +270,28 @@ ContactParser = (function() {
         indexes['website'] = i;
         usedFields.push(i);
       } else {
-        subfields = fields[i].split(/\s+/);
+        subfields = fields[i];
+        _ref = require('util')._extend({}, americanStates, canadianProvinces);
+        for (key in _ref) {
+          value = _ref[key];
+          if (key.indexOf('_') > 0) {
+            search = "(" + (key.replace('_', ') (')) + ")";
+            replacement = key.replace(/[^_]+/g, "$$$$");
+            ri = 1;
+            while (replacement.indexOf("$$") >= 0) {
+              replacement = replacement.replace("$$", "$" + (ri++));
+            }
+            subfields = subfields.replace(new RegExp(search, 'i'), replacement);
+          }
+        }
+        subfields = subfields.split(/\s+/);
         for (ix = _j = 0, _len1 = subfields.length; _j < _len1; ix = ++_j) {
           subfield = subfields[ix];
           if (subfield.toLowerCase() in canadianProvinces) {
             result.province = canadianProvinces[subfield.toLowerCase()];
             result.country = 'Canada';
             fields[i] = fields[i].replace(subfield, '');
-            indexes['province'] = i + ((_ref = trim(fields[i]).length > 0) != null ? _ref : {
+            indexes['province'] = i + ((_ref1 = trim(fields[i]).length > 0) != null ? _ref1 : {
               1: 0
             });
             usedFields.push(i);
@@ -286,8 +299,8 @@ ContactParser = (function() {
           } else if (subfield.toLowerCase() in americanStates) {
             result.province = americanStates[subfield.toLowerCase()];
             result.country = 'USA';
-            fields[i] = fields[i].replace(subfield, '');
-            indexes['province'] = i + ((_ref1 = trim(fields[i]).length > 0) != null ? _ref1 : {
+            fields[i] = fields[i].replace(subfield.replace('_', ' '), '');
+            indexes['province'] = i + ((_ref2 = trim(fields[i]).length > 0) != null ? _ref2 : {
               1: 0
             });
             usedFields.push(i);
@@ -298,7 +311,7 @@ ContactParser = (function() {
     }
     if (!result.city && indexes['province']) {
       possibleCity = trim(fields[indexes['province'] - 1]);
-      if (_ref2 = indexes['province'] - 1, __indexOf.call(usedFields, _ref2) >= 0) {
+      if (_ref3 = indexes['province'] - 1, __indexOf.call(usedFields, _ref3) >= 0) {
         if (indexes['address'] === indexes['province'] - 1) {
           parts = result.address.split(' ');
           possibleCity = parts.pop();
@@ -310,7 +323,7 @@ ContactParser = (function() {
     }
     if (indexes['address']) {
       i = indexes['address'];
-      while (i + 1 <= fields.length && (_ref3 = i + 1, __indexOf.call(usedFields, _ref3) < 0)) {
+      while (i + 1 <= fields.length && (_ref4 = i + 1, __indexOf.call(usedFields, _ref4) < 0)) {
         i++;
         if (trim(fields[i]) !== '') {
           result.address = "" + result.address + ", " + (trim(fields[i]));

@@ -182,3 +182,15 @@ describe 'Contact Parser', ->
     expect(result.postal).toEqual('94559')
     expect(result.phone).toEqual('(707) 256-3111')
     expect(result.email).toEqual('info@testing.com')
+
+  it 'should handle states with spaces in the name', ->
+    address = "Adair Vineyards • 52 Allhusen Road, New Paltz, New York 12561 • 845-255-1377"
+    sut = new ContactParser
+    result = sut.parse(address)
+    console.log result
+    expect(result.name).toEqual('Adair Vineyards')
+    expect(result.address).toEqual('52 Allhusen Road')
+    expect(result.city).toEqual('New Paltz')
+    expect(result.province).toEqual('NY')
+    expect(result.postal).toEqual('12561')
+    expect(result.phone).toEqual('(845) 255-1377')

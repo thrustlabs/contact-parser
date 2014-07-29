@@ -129,7 +129,7 @@ class ContactParser
 
     canadianPostalRegex = /[a-z]\d[a-z]\s*\d[a-z]\d/i
     usZipRegex = /\w,?\s*(\d\d\d\d\d(-\d\d\d\d){0,1})/ # Check that zip follows *something* so it's not confused with a street #
-    emailRegex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/
+    emailRegex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/i
     websiteRegex = /(http|www)\S+/
     streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)\s*(#\S+){0,1}(\s|$)/i
     phoneRegex = /(\s*phone\s*\:{0,1}\s*){0,1}(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/ig
@@ -144,6 +144,19 @@ class ContactParser
       result.postal = matches[1]
       address = address.replace(matches[1], ',')
 
+    if matches = emailRegex.exec(address)
+      result.email = matches[0]
+      address = address.replace(matches[0], ',')
+
+    if matches = phoneRegex.exec(address)
+      # Is there another, maybe better match?
+      secondCheck = phoneRegex.exec(address)
+      if secondCheck && matches[0].length < secondCheck[0].length
+        matches = secondCheck
+      result.phone = "(#{matches[2]}) #{matches[3]}-#{matches[4]}"
+      address = address.replace(matches[0], ',')
+
+
     fields = address.split(/\s*[,\n\|]\s*/)
     if !addressRegex.test(fields[0])
       result.name = trim(fields[0])
@@ -151,15 +164,7 @@ class ContactParser
 
     for field, i in fields
       field = trim(field)
-      if (matches = phoneRegex.exec(field))
-        # Is there another, maybe better match?
-        secondCheck = phoneRegex.exec(field)
-        if secondCheck && matches[0].length < secondCheck[0].length
-          matches = secondCheck
-        result.phone = "(#{matches[2]}) #{matches[3]}-#{matches[4]}"
-        indexes['phone'] = i
-        usedFields.push(i)
-      else if !result.address && addressRegex.test(field)
+      if !result.address && addressRegex.test(field)
         result.address = field
         indexes['address'] = i
         usedFields.push(i)
@@ -173,10 +178,6 @@ class ContactParser
         result.website = field
         result.website = "http://#{result.website}" if result.website.indexOf('http') != 0
         indexes['website'] = i
-        usedFields.push(i)
-      else if emailRegex.test(field)
-        result.email = field
-        indexes['email'] = i
         usedFields.push(i)
       else
         subfields = fields[i].split(/\s+/)

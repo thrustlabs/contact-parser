@@ -216,7 +216,7 @@ ContactParser = (function() {
     };
     canadianPostalRegex = /[a-z]\d[a-z]\s*\d[a-z]\d/i;
     usZipRegex = /\w,?\s*(\d\d\d\d\d(-\d\d\d\d){0,1})/;
-    emailRegex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
+    emailRegex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/i;
     websiteRegex = /(http|www)\S+/;
     streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)\s*(#\S+){0,1}(\s|$)/i;
     phoneRegex = /(\s*phone\s*\:{0,1}\s*){0,1}(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/ig;
@@ -231,6 +231,18 @@ ContactParser = (function() {
       result.postal = matches[1];
       address = address.replace(matches[1], ',');
     }
+    if (matches = emailRegex.exec(address)) {
+      result.email = matches[0];
+      address = address.replace(matches[0], ',');
+    }
+    if (matches = phoneRegex.exec(address)) {
+      secondCheck = phoneRegex.exec(address);
+      if (secondCheck && matches[0].length < secondCheck[0].length) {
+        matches = secondCheck;
+      }
+      result.phone = "(" + matches[2] + ") " + matches[3] + "-" + matches[4];
+      address = address.replace(matches[0], ',');
+    }
     fields = address.split(/\s*[,\n\|]\s*/);
     if (!addressRegex.test(fields[0])) {
       result.name = trim(fields[0]);
@@ -239,15 +251,7 @@ ContactParser = (function() {
     for (i = _i = 0, _len = fields.length; _i < _len; i = ++_i) {
       field = fields[i];
       field = trim(field);
-      if ((matches = phoneRegex.exec(field))) {
-        secondCheck = phoneRegex.exec(field);
-        if (secondCheck && matches[0].length < secondCheck[0].length) {
-          matches = secondCheck;
-        }
-        result.phone = "(" + matches[2] + ") " + matches[3] + "-" + matches[4];
-        indexes['phone'] = i;
-        usedFields.push(i);
-      } else if (!result.address && addressRegex.test(field)) {
+      if (!result.address && addressRegex.test(field)) {
         result.address = field;
         indexes['address'] = i;
         usedFields.push(i);
@@ -265,10 +269,6 @@ ContactParser = (function() {
           result.website = "http://" + result.website;
         }
         indexes['website'] = i;
-        usedFields.push(i);
-      } else if (emailRegex.test(field)) {
-        result.email = field;
-        indexes['email'] = i;
         usedFields.push(i);
       } else {
         subfields = fields[i].split(/\s+/);

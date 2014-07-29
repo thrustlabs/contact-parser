@@ -160,3 +160,13 @@ describe 'Contact Parser', ->
     expect(result.postal).toEqual('94559')
     expect(result.phone).toEqual('(707) 256-3111')
 
+  it 'should extract identifiable elements from space separated strings', ->
+    address = "710 First Street Napa, CA 94559 PHONE 707.256.3111 info@testing.com"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.address).toEqual('710 First Street')
+    expect(result.city).toEqual('Napa')
+    expect(result.province).toEqual('CA')
+    expect(result.postal).toEqual('94559')
+    expect(result.phone).toEqual('(707) 256-3111')
+    expect(result.email).toEqual('info@testing.com')

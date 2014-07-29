@@ -141,4 +141,13 @@ describe 'Contact Parser', ->
     expect(result.province).toEqual('CO')
     expect(result.postal).toEqual('80239-4458')
 
+  it 'should take the city out of the address if it finds it by proximity to state', ->
+    address = "710 First Street Napa, CA 94559"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.address).toEqual('710 First Street')
+    expect(result.city).toEqual('Napa')
+    expect(result.province).toEqual('CA')
+    expect(result.postal).toEqual('94559')
+
 

@@ -131,7 +131,7 @@ class ContactParser
     usZipRegex = /\w,?\s*(\d\d\d\d\d(-\d\d\d\d){0,1})/ # Check that zip follows *something* so it's not confused with a street #
     emailRegex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/
     websiteRegex = /(http|www)\S+/
-    streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)(\s|$)/i
+    streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)\s*(#\S+){0,1}(\s|$)/i
     phoneRegex = /(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/
     addressRegex = /^\d+\s+.*/
 
@@ -145,10 +145,7 @@ class ContactParser
       address = address.replace(matches[1], ',')
 
     fields = address.split(/\s*[,\n\|]\s*/)
-    if addressRegex.test(fields[0])
-      result.address = trim(fields[0])
-      fields.shift
-    else
+    if !addressRegex.test(fields[0])
       result.name = trim(fields[0])
       fields.shift
 
@@ -163,7 +160,7 @@ class ContactParser
         result.phone = "(#{matches[1]}) #{matches[2]}-#{matches[3]}"
         indexes['phone'] = i
         usedFields.push(i)
-      else if result.address == '' && addressRegex.test(field)
+      else if !result.address && addressRegex.test(field)
         result.address = field
         indexes['address'] = i
         usedFields.push(i)
@@ -172,7 +169,7 @@ class ContactParser
           if result.address.indexOf(matches[0]) < result.address.length - matches[0].length - 1
             extraInfo = result.address.substring(result.address.indexOf(matches[0]) + matches[0].length)
             result.city = trim(extraInfo)
-            result.address = result.address.substring(0, result.address.indexOf(matches[0]) + matches[0].length - 1)
+            result.address = trim(result.address.substring(0, result.address.indexOf(matches[0]) + matches[0].length - 1))
       else if websiteRegex.test(field)
         result.website = field
         result.website = "http://#{result.website}" if result.website.indexOf('http') != 0
@@ -195,8 +192,17 @@ class ContactParser
             indexes['province'] = i + (trim(fields[i]).length > 0 ? 1 : 0)
             usedFields.push(i)
             break;
+
     if !result.city && indexes['province']
-      result.city = trim(fields[indexes['province']-1])
+      possibleCity = trim(fields[indexes['province']-1])
+      if (indexes['province']-1) in usedFields
+        # We've used this for something else
+        if indexes['address'] == indexes['province']-1
+          # Hope it's a one word city name, because there's no good way to parse it out
+          parts = result.address.split(' ')
+          possibleCity = parts.pop()
+          result.address = string.join(' ', parts)
+      result.city = possibleCity
       usedFields.push(indexes['province']-1)
 
     if indexes['address']

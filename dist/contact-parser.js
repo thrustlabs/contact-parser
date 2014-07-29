@@ -244,7 +244,7 @@ ContactParser = (function() {
       address = address.replace(matches[0], ',');
     }
     fields = address.split(/\s*[,\n\|]\s*/);
-    if (!addressRegex.test(fields[0])) {
+    if (!addressRegex.test(trim(fields[0]))) {
       result.name = trim(fields[0]);
       fields.shift;
     }

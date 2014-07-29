@@ -243,7 +243,7 @@ ContactParser = (function() {
       result.phone = "(" + matches[2] + ") " + matches[3] + "-" + matches[4];
       address = address.replace(matches[0], ',');
     }
-    fields = address.split(/\s*[,\n\|]\s*/);
+    fields = address.split(/\s*[,\n\|\u2022\u2219]\s*/);
     if (!addressRegex.test(trim(fields[0]))) {
       result.name = trim(fields[0]);
       fields.shift;

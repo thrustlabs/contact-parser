@@ -150,4 +150,13 @@ describe 'Contact Parser', ->
     expect(result.province).toEqual('CA')
     expect(result.postal).toEqual('94559')
 
+  it 'should use labels as hints if available', ->
+    address = "710 First Street Napa, CA 94559 FAX 707.256.0864  PHONE 707.256.3111"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.address).toEqual('710 First Street')
+    expect(result.city).toEqual('Napa')
+    expect(result.province).toEqual('CA')
+    expect(result.postal).toEqual('94559')
+    expect(result.phone).toEqual('(707) 256-3111')
 

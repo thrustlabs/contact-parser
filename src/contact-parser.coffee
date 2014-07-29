@@ -132,7 +132,7 @@ class ContactParser
     emailRegex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/
     websiteRegex = /(http|www)\S+/
     streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)\s*(#\S+){0,1}(\s|$)/i
-    phoneRegex = /(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/
+    phoneRegex = /(\s*phone\s*\:{0,1}\s*){0,1}(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/ig
     addressRegex = /^\d+\s+.*/
 
     if canadianPostalRegex.test(address)
@@ -151,13 +151,12 @@ class ContactParser
 
     for field, i in fields
       field = trim(field)
-      if emailRegex.test(field)
-        result.email = field
-        indexes['email'] = i
-        usedFields.push(i)
-      else if phoneRegex.test(field)
-        matches = phoneRegex.exec(field)
-        result.phone = "(#{matches[1]}) #{matches[2]}-#{matches[3]}"
+      if (matches = phoneRegex.exec(field))
+        # Is there another, maybe better match?
+        secondCheck = phoneRegex.exec(field)
+        if secondCheck && matches[0].length < secondCheck[0].length
+          matches = secondCheck
+        result.phone = "(#{matches[2]}) #{matches[3]}-#{matches[4]}"
         indexes['phone'] = i
         usedFields.push(i)
       else if !result.address && addressRegex.test(field)
@@ -174,6 +173,10 @@ class ContactParser
         result.website = field
         result.website = "http://#{result.website}" if result.website.indexOf('http') != 0
         indexes['website'] = i
+        usedFields.push(i)
+      else if emailRegex.test(field)
+        result.email = field
+        indexes['email'] = i
         usedFields.push(i)
       else
         subfields = fields[i].split(/\s+/)

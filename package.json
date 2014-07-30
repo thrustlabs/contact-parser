@@ -1,6 +1,6 @@
 {
   "name": "contact-parser",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Parse a block of text (such as an email signature) and extract address fields",
   "main": "dist/contact-parser.js",
   "repository": {

@@ -131,7 +131,7 @@ class ContactParser
     usZipRegex = /\w,?\s*(\d\d\d\d\d(-\d\d\d\d){0,1})/ # Check that zip follows *something* so it's not confused with a street #
     emailRegex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/i
     websiteRegex = /(http|www)\S+/
-    streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)\s*(#\S+){0,1}(\s|$)/i
+    streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)\s*(#\S+|((suite|unit|apt\.{0,1}|apartment)\s*\S+)){0,1}(\s|$)/i
     phoneRegex = /(\s*phone\s*\:{0,1}\s*){0,1}(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/ig
     addressRegex = /^\d+\s+.*/
 

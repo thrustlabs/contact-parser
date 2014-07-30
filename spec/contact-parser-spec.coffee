@@ -194,3 +194,16 @@ describe 'Contact Parser', ->
     expect(result.province).toEqual('NY')
     expect(result.postal).toEqual('12561')
     expect(result.phone).toEqual('(845) 255-1377')
+
+  it 'should handle our own darned address', ->
+    address = "Thrust Labs Inc., 1 Yonge St Suite 1801, Toronto, Ontario, M5E 1W7 Canada"
+    sut = new ContactParser
+    result = sut.parse(address)
+    console.log result
+    expect(result.name).toEqual('Thrust Labs Inc.')
+    expect(result.address).toEqual('1 Yonge St Suite 1801')
+    expect(result.city).toEqual('Toronto')
+    expect(result.province).toEqual('ON')
+    expect(result.postal).toEqual('M5E 1W7')
+    expect(result.country).toEqual('Canada')
+

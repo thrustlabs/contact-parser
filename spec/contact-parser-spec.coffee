@@ -187,7 +187,6 @@ describe 'Contact Parser', ->
     address = "Adair Vineyards • 52 Allhusen Road, New Paltz, New York 12561 • 845-255-1377"
     sut = new ContactParser
     result = sut.parse(address)
-    console.log result
     expect(result.name).toEqual('Adair Vineyards')
     expect(result.address).toEqual('52 Allhusen Road')
     expect(result.city).toEqual('New Paltz')
@@ -199,7 +198,6 @@ describe 'Contact Parser', ->
     address = "Thrust Labs Inc., 1 Yonge St Suite 1801, Toronto, Ontario, M5E 1W7 Canada"
     sut = new ContactParser
     result = sut.parse(address)
-    console.log result
     expect(result.name).toEqual('Thrust Labs Inc.')
     expect(result.address).toEqual('1 Yonge St Suite 1801')
     expect(result.city).toEqual('Toronto')

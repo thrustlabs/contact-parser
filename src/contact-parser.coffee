@@ -36,9 +36,17 @@ class ContactParser
       @province = ''
       @country = ''
       @address = ''
+      @city = ''
       @postal = ''
       @website = ''
       @phone = ''
+
+    score: () ->
+      return 0 if !@address
+      return 50 if @address && @city && !@province && !@postal && !@country
+      return 80 if @address && @city && @province && !@postal && !@country
+      return 90 if !@phone || !@email || !@website
+      return 100
 
   canadianProvinces = {
     'british_columbia': 'BC', 'bc': 'BC',

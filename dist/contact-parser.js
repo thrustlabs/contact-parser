@@ -41,10 +41,27 @@ ContactParser = (function() {
       this.province = '';
       this.country = '';
       this.address = '';
+      this.city = '';
       this.postal = '';
       this.website = '';
       this.phone = '';
     }
+
+    ContactParserResult.prototype.score = function() {
+      if (!this.address) {
+        return 0;
+      }
+      if (this.address && this.city && !this.province && !this.postal && !this.country) {
+        return 50;
+      }
+      if (this.address && this.city && this.province && !this.postal && !this.country) {
+        return 80;
+      }
+      if (!this.phone || !this.email || !this.website) {
+        return 90;
+      }
+      return 100;
+    };
 
     return ContactParserResult;
 

@@ -131,3 +131,12 @@ describe 'Contact Parser', ->
     expect(result.city).toEqual('Denver')
     expect(result.province).toEqual('CO')
     expect(result.postal).toEqual('12345-1234')
+
+  it 'should parse PO Boxes', ->
+    address = "PO Box 12345, Denver CO 45678"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.address).toEqual('PO Box 12345')
+    expect(result.city).toEqual('Denver')
+    expect(result.province).toEqual('CO')
+    expect(result.postal).toEqual('45678')

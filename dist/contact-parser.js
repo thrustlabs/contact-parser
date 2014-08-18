@@ -223,7 +223,7 @@ ContactParser = (function() {
   };
 
   ContactParser.prototype.parse = function(address) {
-    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, ix, key, matches, parts, phoneRegex, possibleCity, replacement, result, ri, search, secondCheck, streetNameRegex, subfield, subfields, trim, usZipRegex, usedFields, value, websiteRegex, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4;
+    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, ix, key, matches, parts, phoneRegex, poBoxRegex, possibleCity, replacement, result, ri, search, secondCheck, streetNameRegex, subfield, subfields, trim, usZipRegex, usedFields, value, websiteRegex, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4;
     result = new ContactParserResult;
     indexes = {};
     usedFields = [];
@@ -237,6 +237,12 @@ ContactParser = (function() {
     streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street)\s*(#\S+|((suite|unit|apt\.{0,1}|apartment)\s*\S+)){0,1}(\s|$)/i;
     phoneRegex = /(\s*phone\s*\:{0,1}\s*){0,1}(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/ig;
     addressRegex = /^\d+\s+.*/;
+    poBoxRegex = /^\s*(((P(OST)?.?\s*(O(FF(ICE)?)?)?.?\s+(B(IN|OX))?)|B(IN|OX))\s+[\d\.#\-]+)/i;
+    if (poBoxRegex.test(address)) {
+      matches = address.match(poBoxRegex);
+      result.address = matches[0];
+      address = address.replace(matches[0], ',');
+    }
     if (canadianPostalRegex.test(address)) {
       matches = address.match(canadianPostalRegex);
       result.postal = matches[0];

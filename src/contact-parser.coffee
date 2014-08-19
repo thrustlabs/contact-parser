@@ -226,10 +226,8 @@ class ContactParser
       if (indexes['province']-1) in usedFields
         # We've used this for something else
         if indexes['address'] == indexes['province']-1
-          # Hope it's a one word city name, because there's no good way to parse it out
-          parts = result.address.split(' ')
-          possibleCity = parts.pop()
-          result.address = parts.join(' ')
+          # We've already used the field before the province for the address, so give up on city parsing.
+          possibleCity = '';
       result.city = possibleCity
       usedFields.push(indexes['province']-1)
 

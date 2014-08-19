@@ -229,7 +229,7 @@ class ContactParser
           # Hope it's a one word city name, because there's no good way to parse it out
           parts = result.address.split(' ')
           possibleCity = parts.pop()
-          result.address = string.join(' ', parts)
+          result.address = parts.join(' ')
       result.city = possibleCity
       usedFields.push(indexes['province']-1)
 

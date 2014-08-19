@@ -214,3 +214,11 @@ describe 'Contact Parser', ->
     expect(result.postal).toEqual('M5E 1W7')
     expect(result.country).toEqual('Canada')
 
+  it 'If we have trouble finding the city name, try the last word from the address. This might be wrong.', ->
+    address = "1 17th Street #5, CO 12345-1234"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.address).toEqual('1 17th Street') # Note we're wrong on this case. #5 is missing
+    expect(result.city).toEqual('#5') # Not we caused wrong here. Should be empty.
+    expect(result.province).toEqual('CO')
+    expect(result.postal).toEqual('12345-1234')

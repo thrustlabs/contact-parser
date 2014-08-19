@@ -338,7 +338,7 @@ ContactParser = (function() {
         if (indexes['address'] === indexes['province'] - 1) {
           parts = result.address.split(' ');
           possibleCity = parts.pop();
-          result.address = string.join(' ', parts);
+          result.address = parts.join(' ');
         }
       }
       result.city = possibleCity;

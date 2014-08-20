@@ -27,6 +27,11 @@ var result = parser.parse('Jason, 1 Yonge St')
 console.log(result); // {name: 'Jason', email: '', province: '', country: '', address: '1 Yonge St', postal: '', website: '', phone: ''}
 ```
 
+## Error handling
+
+If passed an empty input (including null or undefined strings) the result will
+be empty strings for all fields and a score of 0.
+
 ## Bugs
 
 I'm sure there are several :) Help fix them by submitting an issue, or better yet, a tested pull request.

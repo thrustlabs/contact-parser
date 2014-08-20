@@ -2,6 +2,37 @@ describe 'Contact Parser', ->
 
   ContactParser = require(__dirname + '/../src/contact-parser.js')
 
+  it 'should handle a null, undefined or empty input by returning empty strings and a score of 0', ->
+    sut = new ContactParser
+    result = sut.parse(null)
+    expect(result.score()).toEqual(0)
+    expect(result.name).toEqual('')
+    expect(result.email).toEqual('')
+    expect(result.address).toEqual('')
+    expect(result.city).toEqual('')
+    expect(result.province).toEqual('')
+    expect(result.country).toEqual('')
+
+    sut = new ContactParser
+    result = sut.parse(undefined)
+    expect(result.score()).toEqual(0)
+    expect(result.name).toEqual('')
+    expect(result.email).toEqual('')
+    expect(result.address).toEqual('')
+    expect(result.city).toEqual('')
+    expect(result.province).toEqual('')
+    expect(result.country).toEqual('')
+
+    sut = new ContactParser
+    result = sut.parse('')
+    expect(result.score()).toEqual(0)
+    expect(result.name).toEqual('')
+    expect(result.email).toEqual('')
+    expect(result.address).toEqual('')
+    expect(result.city).toEqual('')
+    expect(result.province).toEqual('')
+    expect(result.country).toEqual('')
+
   it 'should extract the name', ->
     expectedValue = 'John Smith'
     sut = new ContactParser

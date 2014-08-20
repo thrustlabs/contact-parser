@@ -129,6 +129,9 @@ class ContactParser
   parse: (address) ->
     result = new ContactParserResult
 
+    if address is undefined || address is null || address.trim() == ''
+      return result
+
     indexes = {}
     usedFields = []
 

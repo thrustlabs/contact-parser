@@ -225,6 +225,9 @@ ContactParser = (function() {
   ContactParser.prototype.parse = function(address) {
     var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, ix, key, matches, phoneRegex, poBoxRegex, possibleCity, replacement, result, ri, search, secondCheck, streetNameRegex, subfield, subfields, trim, usZipRegex, usedFields, value, websiteRegex, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4;
     result = new ContactParserResult;
+    if (address === void 0 || address === null || address.trim() === '') {
+      return result;
+    }
     indexes = {};
     usedFields = [];
     trim = function(txt) {

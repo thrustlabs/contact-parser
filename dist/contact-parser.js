@@ -223,7 +223,7 @@ ContactParser = (function() {
   };
 
   ContactParser.prototype.parse = function(address) {
-    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, ix, key, matches, parts, phoneRegex, poBoxRegex, possibleCity, replacement, result, ri, search, secondCheck, streetNameRegex, subfield, subfields, trim, usZipRegex, usedFields, value, websiteRegex, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4;
+    var addressRegex, canadianPostalRegex, emailRegex, extraInfo, field, fields, i, indexes, ix, key, matches, phoneRegex, poBoxRegex, possibleCity, replacement, result, ri, search, secondCheck, streetNameRegex, subfield, subfields, trim, usZipRegex, usedFields, value, websiteRegex, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4;
     result = new ContactParserResult;
     indexes = {};
     usedFields = [];
@@ -336,9 +336,7 @@ ContactParser = (function() {
       possibleCity = trim(fields[indexes['province'] - 1]);
       if (_ref3 = indexes['province'] - 1, __indexOf.call(usedFields, _ref3) >= 0) {
         if (indexes['address'] === indexes['province'] - 1) {
-          parts = result.address.split(' ');
-          possibleCity = parts.pop();
-          result.address = string.join(' ', parts);
+          possibleCity = '';
         }
       }
       result.city = possibleCity;

@@ -20,7 +20,7 @@
     "grunt-contrib-watch": "~0.6.1",
     "grunt-contrib-clean": "~0.4.1",
     "grunt-contrib-copy": "~0.5.0",
-    "grunt-jasmine-node": "latest",
+    "grunt-jasmine-node-new": "~0.3.2",
     "grunt-cli": "~0.1.13"
   }
 }

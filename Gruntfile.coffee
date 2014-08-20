@@ -58,5 +58,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-contrib-clean"
-  grunt.loadNpmTasks "grunt-jasmine-node"
+  grunt.loadNpmTasks "grunt-jasmine-node-new"
   grunt.loadNpmTasks "grunt-contrib-copy"

@@ -1,3 +1,9 @@
+### v0.0.5
+    * Added initial support for PO Boxes
+    * Fixed an undefined variable error
+    * Improved handling of invalid inputs
+    * Improved city name detection
+
 ### v0.0.4
     * Added prelimary score() metric for result accuracy
     * Fix for (ahem) our own address

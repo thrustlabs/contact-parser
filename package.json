@@ -12,6 +12,9 @@
   },
   "author": "Jason Doucette",
   "license": "MIT",
+  "scripts" : {
+    "test" : "grunt jasmine_node -v"
+  },
   "devDependencies": {
     "jasmine-node": "~1.14.5",
     "coffee-script": "~1.7.0",

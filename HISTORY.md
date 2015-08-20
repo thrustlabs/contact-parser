@@ -1,3 +1,4 @@
+### v0.0.6
 
     * Improved support parsing dozens more street names (#15, Thanks to Mark Stosberg)
 

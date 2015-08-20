@@ -39,4 +39,4 @@ I'm sure there are several :) Help fix them by submitting an issue, or better ye
 
 ## License
 
-** MIT **
+[MIT](./MIT.LICENSE)

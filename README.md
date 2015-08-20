@@ -1,10 +1,10 @@
 # contact-parser
 
-A simple node module to parse address information (such as an email signature)
+A simple node module to parse street address strings (such as an email signature)
 into component parts.  It's in use over at [Barnivore](http://barnivore.com/)
-where we input a lot of addresses.
+where we input a lot of street addresses.
 
-At present it's optimized for North America; other address formats will be
+At present it's optimized for United States and Canadian street addresses; other address formats will be
 supported as we hammer the bugs out in production.
 
 ## Installation

@@ -1,3 +1,6 @@
+
+    * Improved support parsing dozens more street names (#15, Thanks to Mark Stosberg)
+
 ### v0.0.5
     * Added initial support for PO Boxes
     * Fixed an undefined variable error

@@ -253,3 +253,12 @@ describe 'Contact Parser', ->
     expect(result.address).toEqual('1 17th Street #5')
     expect(result.province).toEqual('CO')
     expect(result.postal).toEqual('12345-1234')
+
+  it 'should parse when common between address and city is missing and street name is avenue', ->
+    address = "12345 East Center Avenue Aurora, CO 80012"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.city).toEqual('Aurora')
+    expect(result.address).toEqual('12345 East Center Avenue')
+    expect(result.province).toEqual('CO')
+    expect(result.postal).toEqual('80012')

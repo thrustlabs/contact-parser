@@ -1,3 +1,10 @@
+
+### v0.0.7
+
+No code changes.
+
+    * Cleaned up README and fixed a typo in the test. 
+
 ### v0.0.6
 
     * Improved support parsing dozens more street names (#15, Thanks to Mark Stosberg)

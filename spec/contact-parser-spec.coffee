@@ -254,7 +254,7 @@ describe 'Contact Parser', ->
     expect(result.province).toEqual('CO')
     expect(result.postal).toEqual('12345-1234')
 
-  it 'should parse when common between address and city is missing and street name is avenue', ->
+  it 'should parse when comma between address and city is missing and street name is avenue', ->
     address = "12345 East Center Avenue Aurora, CO 80012"
     sut = new ContactParser
     result = sut.parse(address)

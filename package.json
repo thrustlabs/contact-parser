@@ -1,8 +1,9 @@
 {
   "name": "contact-parser",
-  "version": "0.0.6",
-  "description": "Parse a block of text (such as an email signature) and extract address fields",
+  "version": "0.0.7",
+  "description": "Parse a block of text (such as an email signature) and extract US and CA street address fields",
   "main": "dist/contact-parser.js",
+  "homepage" : "https://github.com/thrustlabs/contact-parser",
   "repository": {
     "type": "git",
     "url": "https://github.com/thrustlabs/contact-parser.git"

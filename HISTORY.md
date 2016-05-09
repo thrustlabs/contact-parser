@@ -1,9 +1,12 @@
+### v0.0.8
+
+    * Added support for semi-numeric street numbers (e.g. N95W18000 Something St.)
 
 ### v0.0.7
 
 No code changes.
 
-    * Cleaned up README and fixed a typo in the test. 
+    * Cleaned up README and fixed a typo in the test.
 
 ### v0.0.6
 

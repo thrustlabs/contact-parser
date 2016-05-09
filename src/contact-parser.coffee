@@ -139,13 +139,13 @@ class ContactParser
       return (txt || '').replace(/^\s+|\s+$/g, '')
 
     canadianPostalRegex = /[a-z]\d[a-z]\s*\d[a-z]\d/i
-    usZipRegex = /\w,?\s*(\d\d\d\d\d(-\d\d\d\d){0,1})/ # Check that zip follows *something* so it's not confused with a street #
+    usZipRegex = /\w(?:,\s*|\s+)(\d\d\d\d\d(-\d\d\d\d){0,1})/ # Check that zip follows *something* so it's not confused with a street #
     emailRegex = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/i
     websiteRegex = /(http|www)\S+/
 
     streetNameRegex = /\s(dr\.{0,1}|drive|st\.{0,1}|street|(?:alle?y)|(?:app(?:roach)?)|(?:arc(?:ade)?)|(?:av(?:e|enue)?)|(?:(?:boulevard|blvd))|(?:brow)|(?:bypa(?:ss)?)|(?:c(?:ause)?way)|(?:(?:circuit|cct))|(?:circ(?:us)?)|(?:cl(?:ose)?)|(?:co?pse)|(?:(?:corner|cnr))|(?:(?:c(?:(?:our)|r)?t|crt))|(?:cres(?:cent)?)|(?:dr(?:ive)?)|(?:esp(?:lanande)?)|(?:f(?:ree)?way)|(?:(?:frontage|frnt))|(?:(?:glade|gld))|(?:gr(?:ee)?n)|(?:(?:highway|hwy))|(?:(?:lane|ln))|(?:link)|(?:loop)|(?:mall)|(?:mews)|(?:(?:packet|pckt))|(?:p(?:ara)?de)|(?:(?:parkway|pkwy))|(?:pl(?:ace)?)|(?:prom(?:enade)?)|(?:res(?:erve)?)|(?:rise)|(?:r(?:oa)?d)|(?:row)|(?:sq(?:uare)?)|(?:st(?:reet)?)|(?:stri?p)|(?:tarn)|(?:t(?:erra)?ce)|(?:(?:thoroughfare|tfre))|(?:track?)|(?:t(?:runk)?way)|(?:vi?sta)|(?:walk)|(?:wa?y)|(?:w(?:alk)?way)|(?:yard))\s*(#\S+|((suite|unit|apt\.{0,1}|apartment)\s*\S+)){0,1}(\s|$)/i
     phoneRegex = /(\s*phone\s*\:{0,1}\s*){0,1}(\d\d\d)[ \-\.](\d\d\d)[ \-\.](\d\d\d\d)/ig
-    addressRegex = /^\d+\s+.*/
+    addressRegex = /^(\w*\d\w*)+\s+.*/
     poBoxRegex = /^\s*(((P(OST)?.?\s*(O(FF(ICE)?)?)?.?\s+(B(IN|OX))?)|B(IN|OX))\s+[\d\.#\-]+)/i
 
     if poBoxRegex.test(address)
@@ -173,7 +173,6 @@ class ContactParser
         matches = secondCheck
       result.phone = "(#{matches[2]}) #{matches[3]}-#{matches[4]}"
       address = address.replace(matches[0], ',')
-
 
     fields = address.split(/\s*[,\n\|\u2022\u2219]\s*/)
     if !addressRegex.test(trim(fields[0]))

@@ -262,3 +262,15 @@ describe 'Contact Parser', ->
     expect(result.address).toEqual('12345 East Center Avenue')
     expect(result.province).toEqual('CO')
     expect(result.postal).toEqual('80012')
+
+  it 'should handle semi-numeric street addresses', ->
+    address = "N95W18000 Appleton Ave, Menomonee Falls, WI"
+    sut = new ContactParser
+    result = sut.parse(address)
+    expect(result.name).toEqual('')
+    expect(result.city).toEqual('Menomonee Falls')
+    expect(result.address).toEqual('N95W18000 Appleton Ave')
+    expect(result.province).toEqual('WI')
+    expect(result.postal).toEqual('')
+    expect(result.country).toEqual('USA')
+
